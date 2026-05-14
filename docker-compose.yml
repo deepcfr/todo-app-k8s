@@ -1,0 +1,28 @@
+name: k8s-app
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: k8s-app-pg
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: deep
+      POSTGRES_PASSWORD: smthn
+      POSTGRES_DB: k8s-db
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U deep -d k8s-db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:
