@@ -1,6 +1,21 @@
 name: k8s-app
 
 services:
+  backend:
+    build:
+      context: ./backend
+    container_name: k8s-app-backend
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    networks:
+      - my_network
+
   postgres:
     image: postgres:16-alpine
     container_name: k8s-app-pg
@@ -24,5 +39,11 @@ services:
     ports:
       - "5432:5432"
 
+    networks:
+      - my_network
+
 volumes:
   postgres_data:
+
+networks:
+  my_network:

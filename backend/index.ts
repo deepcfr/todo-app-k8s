@@ -10,10 +10,14 @@ app.use(cors());
 
 // db pool
 const pool = new Pool({
-  connectionString: "postgresql://deep:smthn@localhost:5432/k8s-db",
+  connectionString: "postgresql://deep:smthn@postgres:5432/k8s-db",
 });
 
 app.get("/", (req, res) => {
+  res.json({ message: "meow meow" });
+});
+
+app.get("/health", (req, res) => {
   res.json({ health: "ok" });
 });
 
