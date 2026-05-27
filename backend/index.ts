@@ -10,7 +10,8 @@ app.use(cors());
 
 // db pool
 const pool = new Pool({
-  connectionString: "postgresql://deep:smthn@postgres:5432/k8s-db",
+  connectionString:
+    process.env.DATABASE_URL || "postgresql://deep:smthn@postgres:5432/k8s-db",
 });
 
 app.get("/", (req, res) => {
@@ -62,18 +63,27 @@ app.delete("/todos/:id", async (req, res) => {
   res.json(result.rows[0]);
 });
 
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
   console.log(`Server is running on port ${port}`);
 });
 
 // add the db if doesnt exist
 async function initDB() {
-  await pool.query(`CREATE TABLE IF NOT EXISTS todos (
+  while (true) {
+    try {
+      await pool.query(`CREATE TABLE IF NOT EXISTS todos (
         id SERIAL PRIMARY KEY,
         text TEXT NOT NULL,
         done BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT NOW()
-    )`);
+      )`);
+      console.log("database initialized");
+      break;
+    } catch (err: any) {
+      console.log("waiting for database...", err.message);
+      await new Promise((res) => setTimeout(res, 2000));
+    }
+  }
 }
 
 initDB();
