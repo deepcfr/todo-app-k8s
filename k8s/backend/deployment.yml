@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: k8s-app-backend
-          image: k8s-app-backend:v2
+          image: 013457018342.dkr.ecr.ap-south-1.amazonaws.com/k8s-app-backend:latest
 
           ports:
             - containerPort: 8080

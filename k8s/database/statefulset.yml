@@ -4,7 +4,7 @@ metadata:
   name: postgres-statefulset
   namespace: database
 spec:
-  serviceName: postgres
+  serviceName: postgres-service
 
   replicas: 1
 
@@ -44,6 +44,9 @@ spec:
                   name: postgres-secret
                   key: POSTGRES_DB
 
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data
@@ -60,4 +63,4 @@ spec:
           requests:
             storage: 1Gi
 
-        storageClassName: standard
+        storageClassName: gp2
