@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: k8s-app-backend
-          image: 013457018342.dkr.ecr.ap-south-1.amazonaws.com/k8s-app-backend:latest
+          image: 013457018342.dkr.ecr.ap-south-1.amazonaws.com/k8s-app-backend:v2
 
           ports:
             - containerPort: 8080
@@ -37,3 +37,19 @@ spec:
             limits:
               memory: "256Mi"
               cpu: "200m"
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            failureThreshold: 3

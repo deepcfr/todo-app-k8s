@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/health", (req, res) => {
-  res.json({ health: "ok" });
+  res.status(200).json({ health: "ok" });
 });
 
 app.get("/todos", async (req, res) => {
@@ -63,10 +63,6 @@ app.delete("/todos/:id", async (req, res) => {
   res.json(result.rows[0]);
 });
 
-app.listen(port, "0.0.0.0", () => {
-  console.log(`Server is running on port ${port}`);
-});
-
 // add the db if doesnt exist
 async function initDB() {
   while (true) {
@@ -86,4 +82,12 @@ async function initDB() {
   }
 }
 
-initDB();
+async function startServer() {
+  await initDB();
+
+  app.listen(8080, "0.0.0.0", () => {
+    console.log(`server running on port -> 8080`);
+  });
+}
+
+startServer();
