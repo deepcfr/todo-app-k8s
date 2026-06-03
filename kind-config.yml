@@ -7,3 +7,7 @@ nodes:
         hostPort: 8080
         protocol: TCP
   - role: worker
+  - role: worker
+networking:
+  disableDefaultCNI: true # CNI = container network interface
+  podSubnet: 192.168.0.0/16
