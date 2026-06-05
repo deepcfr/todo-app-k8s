@@ -6,7 +6,12 @@ const app = express();
 const port = 8080;
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  }),
+);
 
 // db pool
 const pool = new Pool({
@@ -85,7 +90,7 @@ async function initDB() {
 async function startServer() {
   await initDB();
 
-  app.listen(8080, "0.0.0.0", () => {
+  app.listen(port, "0.0.0.0", () => {
     console.log(`server running on port -> 8080`);
   });
 }

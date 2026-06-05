@@ -16,6 +16,20 @@ services:
     networks:
       - my_network
 
+  frontend:
+    build:
+      context: ./frontend
+    container_name: k8s-app-frontend
+
+    ports:
+      - "5173:80"
+
+    depends_on:
+      - backend
+
+    networks:
+      - my_network
+
   postgres:
     image: postgres:16-alpine
     container_name: k8s-app-pg
