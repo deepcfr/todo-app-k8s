@@ -7,10 +7,12 @@ nodes:
       - containerPort: 30080
         hostPort: 8080
         protocol: TCP
+        listenAddress: "127.0.0.1"
       # frontend
       - containerPort: 30173
         hostPort: 5173
         protocol: TCP
+        listenAddress: "127.0.0.1"
   - role: worker
   - role: worker
 networking:

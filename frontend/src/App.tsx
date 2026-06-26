@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 
-// const API = import.meta.env.VITE_API_URL || "http://localhost:8080";
-const API = "http://localhost:8080";
+
+declare global {
+  interface Window {
+    API_URL: string;
+  }
+}
+
+const API = window.API_URL || "http://localhost:8080";
 
 interface Todo {
   id: number;

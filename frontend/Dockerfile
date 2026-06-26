@@ -8,6 +8,12 @@ RUN bun run build
 
 # serve using nginx
 FROM nginx:stable-alpine
+
+# because we are using envsubst
+RUN apk add --no-cache gettext 
+
 COPY --from=builder /app/dist /usr/share/nginx/html
+COPY entrypoint.sh /docker-entrypoint.sh   
+RUN chmod +x /docker-entrypoint.sh
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/docker-entrypoint.sh"]

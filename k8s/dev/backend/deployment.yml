@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: k8s-app-backend
-          image: k8s-app-backend:v2
+          image: k8s-app-backend:latest
           imagePullPolicy: Never
 
           ports:
@@ -30,6 +30,12 @@ spec:
                 secretKeyRef:
                   name: backend-secret
                   key: DATABASE_URL
+            
+            - name: FRONTEND_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: FRONTEND_URL
 
           resources:
             requests:

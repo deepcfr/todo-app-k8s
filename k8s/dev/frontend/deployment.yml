@@ -24,6 +24,13 @@ spec:
           ports:
             - containerPort: 80
 
+          env:
+            - name: API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: frontend-config
+                  key: API_URL
+
           resources:
             requests:
               memory: "64Mi"
