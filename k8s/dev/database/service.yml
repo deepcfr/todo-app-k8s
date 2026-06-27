@@ -3,7 +3,7 @@ kind: Service
 
 metadata:
   name: postgres-service
-  namespace: database
+  namespace: todo-app
 
 spec:
   type: ClusterIP

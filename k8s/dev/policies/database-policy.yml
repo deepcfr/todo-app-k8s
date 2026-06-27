@@ -3,7 +3,7 @@ kind: NetworkPolicy
 
 metadata:
   name: postgres-network-policy
-  namespace: database
+  namespace: todo-app
 
 spec:
   podSelector:
@@ -15,9 +15,9 @@ spec:
 
   ingress:
     - from:
-        - namespaceSelector:
+        - podSelector:
             matchLabels:
-              name: backend
+              app: backend
 
       ports:
         - protocol: TCP

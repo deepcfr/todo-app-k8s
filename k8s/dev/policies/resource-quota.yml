@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: todo-app-quota
+  namespace: todo-app
+spec:
+  hard:
+    requests.cpu: "400m"
+    requests.memory: "448Mi"
+    limits.cpu: "800m"
+    limits.memory: "896Mi"
+    pods: "3"

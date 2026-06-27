@@ -2,12 +2,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: backend-service
-  namespace: backend
+  namespace: todo-app
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: backend
   ports:
     - port: 80
       targetPort: 8080
-      nodePort: 30080
+      # nodePort: 30080

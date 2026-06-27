@@ -3,11 +3,13 @@ import { useState, useEffect } from "react";
 
 declare global {
   interface Window {
-    API_URL: string;
+    APP_CONFIG: {
+      API_URL: string;
+    }
   }
 }
 
-const API = window.API_URL || "http://localhost:8080";
+const API = window.APP_CONFIG.API_URL || "http://localhost:8080/api";
 
 interface Todo {
   id: number;

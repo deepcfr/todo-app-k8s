@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend-deployment
-  namespace: frontend
+  namespace: todo-app
 spec:
   replicas: 1
 
@@ -17,8 +17,8 @@ spec:
 
     spec:
       containers:
-        - name: k8s-app-frontend
-          image: k8s-app-frontend:latest
+        - name: todo-app-frontend
+          image: todo-app-frontend:latest
           imagePullPolicy: Never
 
           ports:

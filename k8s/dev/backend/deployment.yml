@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend-deployment
-  namespace: backend
+  namespace: todo-app
 spec:
   replicas: 1
 
@@ -17,8 +17,8 @@ spec:
 
     spec:
       containers:
-        - name: k8s-app-backend
-          image: k8s-app-backend:latest
+        - name: todo-app-backend
+          image: todo-app-backend:latest
           imagePullPolicy: Never
 
           ports:
@@ -47,7 +47,7 @@ spec:
 
           readinessProbe:
             httpGet:
-              path: /health
+              path: /api/health
               port: 8080
             initialDelaySeconds: 5
             periodSeconds: 10
@@ -55,7 +55,7 @@ spec:
 
           livenessProbe:
             httpGet:
-              path: /health
+              path: /api/health
               port: 8080
             initialDelaySeconds: 15
             periodSeconds: 20

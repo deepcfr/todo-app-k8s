@@ -3,7 +3,7 @@ kind: ConfigMap
 
 metadata:
   name: backend-config
-  namespace: backend
+  namespace: todo-app
 
 data:
-  FRONTEND_URL: "http://localhost:5173"
+  FRONTEND_URL: "http://todo-app.local"

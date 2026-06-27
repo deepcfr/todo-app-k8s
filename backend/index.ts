@@ -19,20 +19,22 @@ const pool = new Pool({
     process.env.DATABASE_URL || "postgresql://deep:smthn@postgres:5432/k8s-db",
 });
 
-app.get("/", (req, res) => {
+const apiRouter = express.Router();
+
+apiRouter.get("/", (req, res) => {
   res.json({ message: "meow meow" });
 });
 
-app.get("/health", (req, res) => {
+apiRouter.get("/health", (req, res) => {
   res.status(200).json({ health: "ok" });
 });
 
-app.get("/todos", async (req, res) => {
+apiRouter.get("/todos", async (req, res) => {
   const result = await pool.query("SELECT * FROM todos");
   res.json(result.rows);
 });
 
-app.post("/todos", async (req, res) => {
+apiRouter.post("/todos", async (req, res) => {
   const { text } = req.body;
   const result = await pool.query(
     "INSERT INTO todos (text) VALUES ($1) RETURNING *",
@@ -41,7 +43,7 @@ app.post("/todos", async (req, res) => {
   res.json(result.rows[0]);
 });
 
-app.put("/todos/:id", async (req, res) => {
+apiRouter.put("/todos/:id", async (req, res) => {
   const id = req.params.id;
   const { text, done } = req.body;
 
@@ -58,7 +60,7 @@ app.put("/todos/:id", async (req, res) => {
   res.json(result.rows[0]);
 });
 
-app.delete("/todos/:id", async (req, res) => {
+apiRouter.delete("/todos/:id", async (req, res) => {
   const id = req.params.id;
   const result = await pool.query(
     "DELETE FROM todos WHERE id = $1 RETURNING *",
@@ -67,6 +69,8 @@ app.delete("/todos/:id", async (req, res) => {
 
   res.json(result.rows[0]);
 });
+
+app.use("/api", apiRouter);
 
 // add the db if doesnt exist
 async function initDB() {

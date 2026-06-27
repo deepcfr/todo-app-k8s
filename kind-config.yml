@@ -3,14 +3,23 @@ apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
   - role: control-plane
     extraPortMappings:
-      # backend
-      - containerPort: 30080
-        hostPort: 8080
+      # # backend
+      # - containerPort: 30080
+      #   hostPort: 8080
+      #   protocol: TCP
+      #   listenAddress: "127.0.0.1"
+      # # frontend
+      # - containerPort: 30173
+      #   hostPort: 5173
+      #   protocol: TCP
+      #   listenAddress: "127.0.0.1"
+      - containerPort: 80
+        hostPort: 80
         protocol: TCP
         listenAddress: "127.0.0.1"
-      # frontend
-      - containerPort: 30173
-        hostPort: 5173
+        
+      - containerPort: 443
+        hostPort: 443
         protocol: TCP
         listenAddress: "127.0.0.1"
   - role: worker

@@ -3,7 +3,7 @@ kind: ConfigMap
 
 metadata:
   name: frontend-config
-  namespace: frontend
+  namespace: todo-app
 
 data:
-  API_URL: "http://localhost:8080"
+  API_URL: "/api"
