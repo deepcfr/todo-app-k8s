@@ -1,10 +1,10 @@
-name: k8s-app
+name: todo-app
 
 services:
   backend:
     build:
       context: ./backend
-    container_name: k8s-app-backend
+    container_name: todo-app-backend
 
     ports:
       - "8080:8080"
@@ -19,7 +19,7 @@ services:
   frontend:
     build:
       context: ./frontend
-    container_name: k8s-app-frontend
+    container_name: todo-app-frontend
 
     ports:
       - "5173:80"
@@ -32,19 +32,19 @@ services:
 
   postgres:
     image: postgres:16-alpine
-    container_name: k8s-app-pg
+    container_name: todo-app-pg
     restart: unless-stopped
 
     environment:
       POSTGRES_USER: deep
       POSTGRES_PASSWORD: smthn
-      POSTGRES_DB: k8s-db
+      POSTGRES_DB: todo-db
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U deep -d k8s-db"]
+      test: ["CMD-SHELL", "pg_isready -U deep -d todo-db"]
       interval: 10s
       timeout: 5s
       retries: 5

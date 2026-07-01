@@ -2,9 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend-deployment
-  namespace: todo-app
+  namespace: {{ .Values.global.namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.backend.replicaCount }}
 
   selector:
     matchLabels:
@@ -18,11 +18,11 @@ spec:
     spec:
       containers:
         - name: todo-app-backend
-          image: todo-app-backend:latest
-          imagePullPolicy: Never
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
 
           ports:
-            - containerPort: 8080
+            - containerPort: {{ .Values.backend.service.targetPort }}
 
           env:
             - name: DATABASE_URL
@@ -30,7 +30,7 @@ spec:
                 secretKeyRef:
                   name: backend-secret
                   key: DATABASE_URL
-            
+
             - name: FRONTEND_URL
               valueFrom:
                 configMapKeyRef:
@@ -38,25 +38,22 @@ spec:
                   key: FRONTEND_URL
 
           resources:
-            requests:
-              memory: "128Mi"
-              cpu: "100m"
-            limits:
-              memory: "256Mi"
-              cpu: "200m"
+          {{- toYaml .Values.backend.resources | nindent 12 }}
 
           readinessProbe:
             httpGet:
               path: /api/health
-              port: 8080
-            initialDelaySeconds: 5
+              port: {{ .Values.backend.service.targetPort }}
+            initialDelaySeconds: 30
             periodSeconds: 10
             failureThreshold: 3
+            timeoutSeconds: 5
 
           livenessProbe:
             httpGet:
               path: /api/health
-              port: 8080
-            initialDelaySeconds: 15
+              port: {{ .Values.backend.service.targetPort }}
+            initialDelaySeconds: 90
             periodSeconds: 20
             failureThreshold: 3
+            timeoutSeconds: 5

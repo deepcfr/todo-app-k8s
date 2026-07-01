@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: frontend-config
+  namespace: {{ .Values.global.namespace }}
+
+data:
+  BACKEND_URL: "http://{{ .Values.global.domain }}/api"

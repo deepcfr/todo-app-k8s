@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-
-metadata:
-  name: backend-config
-  namespace: todo-app
-
-data:
-  FRONTEND_URL: "http://todo-app.local"

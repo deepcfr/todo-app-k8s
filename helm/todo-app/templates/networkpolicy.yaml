@@ -1,14 +1,12 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
-
 metadata:
-  name: postgres-network-policy
-  namespace: todo-app
-
+  name: todo-app-network-policy
+  namespace: {{ .Values.global.namespace }}
 spec:
   podSelector:
     matchLabels:
-      app: postgres
+      app: database
 
   policyTypes:
     - Ingress

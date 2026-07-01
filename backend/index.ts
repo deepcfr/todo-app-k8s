@@ -16,7 +16,7 @@ app.use(
 // db pool
 const pool = new Pool({
   connectionString:
-    process.env.DATABASE_URL || "postgresql://deep:smthn@postgres:5432/k8s-db",
+    process.env.DATABASE_URL || "postgresql://deep:smthn@postgres:5432/todo-db",
 });
 
 const apiRouter = express.Router();
@@ -91,8 +91,15 @@ async function initDB() {
   }
 }
 
+// debug
+console.log("starting..");
+console.log(process.env.DATABASE_URL);
+
+
 async function startServer() {
   await initDB();
+
+  console.log("DB up..");
 
   app.listen(port, "0.0.0.0", () => {
     console.log(`server running on port -> 8080`);

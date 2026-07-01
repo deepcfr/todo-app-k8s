@@ -1,0 +1,94 @@
+global: # shared accross the app
+  namespace: todo-app
+  env: dev
+  domain: todo-app.local
+
+# component specific
+backend:
+  replicaCount: 1
+
+  image:
+    repository: todo-app-backend
+    tag: v1
+    pullPolicy: Never
+
+  service:
+    port: 80
+    targetPort: 8080
+
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  databaseUrl: postgresql://deep:smthn@database-service.todo-app.svc.cluster.local:5432/todo-db
+
+frontend:
+  replicaCount: 1
+
+  image:
+    repository: todo-app-frontend
+    tag: v1
+    pullPolicy: Never
+
+  service:
+    port: 80
+    targetPort: 80
+
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+database:
+  replicaCount: 1
+
+  image:
+    repository: postgres
+    tag: "16"
+
+  # we can omit targetPort if both are same
+  service:
+    port: 5432
+    targetPort: 5432
+
+  storage:
+    size: 1Gi
+
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+  data:
+    postgresDB: todo-db
+    postgresUser: deep
+    postgresPassword: smthn
+
+# Resource Quota configuration
+resourceQuota:
+  enabled: true
+  requests:
+    cpu: "2"
+    memory: "2Gi"
+  limits:
+    cpu: "4"
+    memory: "4Gi"
+  pods: "15"
+  services: "10"
+
+# enable ingress
+ingress:
+  enabled: true
+  className: nginx
+  tls:
+    enabled: false
