@@ -1,34 +1,34 @@
 name: todo-app
 
 services:
-  backend:
-    build:
-      context: ./backend
-    container_name: todo-app-backend
+  # backend:
+  #   build:
+  #     context: ./backend
+  #   container_name: todo-app-backend
 
-    ports:
-      - "8080:8080"
+  #   ports:
+  #     - "8080:8080"
 
-    depends_on:
-      postgres:
-        condition: service_healthy
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
 
-    networks:
-      - my_network
+  #   networks:
+  #     - my_network
 
-  frontend:
-    build:
-      context: ./frontend
-    container_name: todo-app-frontend
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #   container_name: todo-app-frontend
 
-    ports:
-      - "5173:80"
+  #   ports:
+  #     - "5173:80"
 
-    depends_on:
-      - backend
+  #   depends_on:
+  #     - backend
 
-    networks:
-      - my_network
+  #   networks:
+  #     - my_network
 
   postgres:
     image: postgres:16-alpine
@@ -53,11 +53,11 @@ services:
     ports:
       - "5432:5432"
 
-    networks:
-      - my_network
+    # networks:
+    #   - my_network
 
 volumes:
   postgres_data:
 
-networks:
-  my_network:
+# networks:
+#   my_network:

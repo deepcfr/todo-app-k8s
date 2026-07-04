@@ -1,6 +1,6 @@
 {
   "name": "k8s-app",
-  "module": "index.ts",
+  "module": "src/index.ts",
   "devDependencies": {
     "@types/bun": "latest",
     "@types/cors": "^2.8.19",
@@ -12,6 +12,7 @@
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1",
-    "pg": "^8.20.0"
+    "pg": "^8.20.0",
+    "prom-client": "^15.1.3"
   }
 }

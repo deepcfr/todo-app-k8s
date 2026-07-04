@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import { Pool } from "pg";
+import { metricsMiddleware } from "./middlewares/metrics.middleware";
+import { metricsRegistry, todoCreatedTotal, todoDeletedTotal } from "./metrics";
 
 const app = express();
 const port = 8080;
@@ -16,8 +18,16 @@ app.use(
 // db pool
 const pool = new Pool({
   connectionString:
-    process.env.DATABASE_URL || "postgresql://deep:smthn@postgres:5432/todo-db",
+  process.env.DATABASE_URL || "postgresql://deep:smthn@localhost:5432/todo-db",
 });
+
+// collect metrics
+app.get("/metrics", async(req, res) => {
+  res.setHeader("Content-Type", metricsRegistry.contentType);
+  res.end(await metricsRegistry.metrics());
+})
+
+app.use(metricsMiddleware);
 
 const apiRouter = express.Router();
 
@@ -40,6 +50,9 @@ apiRouter.post("/todos", async (req, res) => {
     "INSERT INTO todos (text) VALUES ($1) RETURNING *",
     [text],
   );
+
+  todoCreatedTotal.inc();
+
   res.json(result.rows[0]);
 });
 
@@ -66,6 +79,8 @@ apiRouter.delete("/todos/:id", async (req, res) => {
     "DELETE FROM todos WHERE id = $1 RETURNING *",
     [id],
   );
+
+  todoDeletedTotal.inc();
 
   res.json(result.rows[0]);
 });
