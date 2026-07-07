@@ -10,7 +10,7 @@ backend:
   image:
     repository: todo-app-backend
     tag: v1
-    pullPolicy: Never
+    pullPolicy: IfNotPresent
 
   service:
     port: 80
@@ -32,7 +32,7 @@ frontend:
   image:
     repository: todo-app-frontend
     tag: v1
-    pullPolicy: Never
+    pullPolicy: IfNotPresent
 
   service:
     port: 80

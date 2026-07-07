@@ -1,9 +1,6 @@
 grafana:
-  adminPassword: admin
+  adminPassword: admin # set the password for user admin
 
 prometheus:
   prometheusSpec:
-    retention: 7d
-
-alertmanager:
-  enabled: true
+    retention: 7d # TSDB data is stored for 7 days
