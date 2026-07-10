@@ -3,17 +3,20 @@ import cors from "cors";
 import { Pool } from "pg";
 import { metricsMiddleware } from "./middlewares/metrics.middleware";
 import { metricsRegistry, todoCreatedTotal, todoDeletedTotal } from "./metrics";
+import { requestLogger } from "./middlewares/requestLogger.middleware";
 
 const app = express();
 const port = 8080;
 
-app.use(express.json());
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE"],
   }),
 );
+app.use(metricsMiddleware);
+app.use(requestLogger);
+app.use(express.json());
 
 // db pool
 const pool = new Pool({
@@ -26,8 +29,6 @@ app.get("/metrics", async(req, res) => {
   res.setHeader("Content-Type", metricsRegistry.contentType);
   res.end(await metricsRegistry.metrics());
 })
-
-app.use(metricsMiddleware);
 
 const apiRouter = express.Router();
 

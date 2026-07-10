@@ -25,11 +25,11 @@ spec:
             - containerPort: {{ .Values.frontend.service.targetPort }}
 
           env:
-            - name: BACKEND_URL
+            - name: API_URL
               valueFrom:
                 configMapKeyRef:
                   name: frontend-config
-                  key: BACKEND_URL
+                  key: API_URL
 
           resources:
           {{- toYaml .Values.frontend.resources | nindent 12 }}

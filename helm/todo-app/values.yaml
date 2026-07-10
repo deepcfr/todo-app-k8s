@@ -5,7 +5,7 @@ global: # shared accross the app
 
 # component specific
 backend:
-  replicaCount: 1
+  replicaCount: 3
 
   image:
     repository: todo-app-backend

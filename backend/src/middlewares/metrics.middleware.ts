@@ -5,11 +5,16 @@ import {
   httpRequestsTotal,
 } from "../metrics";
 
+// ignore this endpoints
+const ignoredEndpoints = new Set(["/health", "/metrics"]);
+
 export function metricsMiddleware(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
+  if (ignoredEndpoints.has(req.path)) return next();
+
   const start = process.hrtime.bigint();
 
   activeRequests.inc();

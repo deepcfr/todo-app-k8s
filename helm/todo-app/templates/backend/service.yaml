@@ -3,10 +3,13 @@ kind: Service
 metadata:
   name: backend-service
   namespace: {{ .Values.global.namespace }}
+  labels:
+    app: backend
 spec:
   type: ClusterIP
   selector:
     app: backend
   ports:
-    - port: {{ .Values.backend.service.port }}
+    - name: http
+      port: {{ .Values.backend.service.port }}
       targetPort: {{ .Values.backend.service.targetPort }}
