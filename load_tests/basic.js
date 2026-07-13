@@ -29,3 +29,8 @@ export default function () {
 
   sleep(1);
 }
+
+// clear all todos after testing is done
+export function teardown() {
+  http.del(`${BASE_URL}/api/todos`);
+}

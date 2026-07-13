@@ -74,6 +74,18 @@ apiRouter.put("/todos/:id", async (req, res) => {
   res.json(result.rows[0]);
 });
 
+// bulk delete todos after testing
+apiRouter.delete("/todos", async (req, res) => {
+  const result = await pool.query("DELETE FROM todos RETURNING *");
+  const deletedCount = result.rowCount ?? 0;
+
+  if (deletedCount > 0) {
+    todoDeletedTotal.inc(deletedCount);
+  }
+
+  res.json({ deletedCount, todos: result.rows });
+});
+
 apiRouter.delete("/todos/:id", async (req, res) => {
   const id = req.params.id;
   const result = await pool.query(
