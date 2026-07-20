@@ -1,0 +1,20 @@
+{{- if .Values.postgresExporter.enabled }}
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: postgres-exporter-service
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: postgres-exporter
+
+spec:
+  type: ClusterIP
+  selector:
+    app: postgres-exporter
+  ports:
+    - name: http
+      port: {{ .Values.postgresExporter.service.port }}
+      targetPort: {{ .Values.postgresExporter.service.targetPort }}
+
+{{- end }}

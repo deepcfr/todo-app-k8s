@@ -1,0 +1,56 @@
+{{- if .Values.postgresExporter.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: postgres-exporter
+  namespace: {{ .Values.global.namespace }}
+
+spec:
+  replicas: {{ .Values.postgresExporter.replicaCount }}
+
+  selector:
+    matchLabels:
+      app: postgres-exporter
+
+  template:
+    metadata:
+      labels:
+        app: postgres-exporter
+
+    spec:
+      containers:
+        - name: postgres-exporter
+          image: "{{ .Values.postgresExporter.image.repository }}:{{ .Values.postgresExporter.image.tag }}"
+          imagePullPolicy: {{ .Values.postgresExporter.image.pullPolicy }}
+
+          ports:
+            - containerPort: {{ .Values.postgresExporter.service.targetPort}}
+
+          env:
+            - name: DATA_SOURCE_URI
+              value: "database-service:{{ .Values.database.service.port }}/{{ .Values.database.auth.postgresDB }}?sslmode=disable"
+
+            - name: DATA_SOURCE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: POSTGRES_USER
+
+            - name: DATA_SOURCE_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: POSTGRES_PASSWORD
+
+            - name: PG_EXPORTER_COLLECTION_TIMEOUT
+              value: "10s"
+
+          resources:
+          {{- toYaml .Values.postgresExporter.resources | nindent 12}}
+
+          readinessProbe:
+
+          livenessProbe:
+
+{{- end }}

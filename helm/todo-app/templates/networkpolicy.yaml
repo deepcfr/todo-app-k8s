@@ -17,6 +17,12 @@ spec:
             matchLabels:
               app: backend
 
+        # allow postgres-exporter to talk to db
+        # for metrics collection
+        - podSelector:
+            matchLabels:
+              app: postgres-exporter
+
       ports:
         - protocol: TCP
           port: 5432

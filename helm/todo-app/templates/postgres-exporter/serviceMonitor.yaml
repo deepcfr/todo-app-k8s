@@ -1,0 +1,19 @@
+{{- if .Values.postgresExporter.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: postgres-exporter-service-monitor
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    release: monitoring
+
+spec:
+  selector:
+    matchLabels:
+      app: postgres-exporter
+
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 30s
+{{- end }}

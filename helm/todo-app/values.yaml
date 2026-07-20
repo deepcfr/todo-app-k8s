@@ -24,8 +24,6 @@ backend:
       cpu: 100m
       memory: 128Mi
 
-  databaseUrl: postgresql://deep:smthn@database-service.todo-app.svc.cluster.local:5432/todo-db
-
 frontend:
   replicaCount: 1
 
@@ -69,10 +67,34 @@ database:
       memory: "512Mi"
       cpu: "500m"
 
-  data:
+  auth:
     postgresDB: todo-db
     postgresUser: deep
     postgresPassword: smthn
+
+# export postgres metrics via postgres-exporter
+postgresExporter:
+  enabled: true
+
+  replicaCount: 1
+
+  image:
+    repository: prometheuscommunity/postgres-exporter
+    tag: v0.20.1
+    pullPolicy: IfNotPresent
+
+  service:
+    port: 9187
+    targetPort: 9187
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+    limits:
+      cpu: 200m
+      memory: 128Mi
 
 # Resource Quota configuration
 resourceQuota:
