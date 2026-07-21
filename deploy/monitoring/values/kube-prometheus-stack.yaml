@@ -1,0 +1,16 @@
+grafana:
+  adminPassword: admin # set the password for user admin
+
+# production options
+#   # enable persistent storage
+#   persistence:
+#     enabled: true
+#     type: pvc
+#     size: 5Gi
+
+#     accessModes:
+#       - ReadWriteOnce
+
+# prometheus:
+#   prometheusSpec:
+#     retention: 7d # TSDB data is stored for 7 days
