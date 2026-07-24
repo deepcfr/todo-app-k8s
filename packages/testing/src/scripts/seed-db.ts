@@ -5,7 +5,7 @@ import { generateTodo } from "../generators/todo";
 async function seedDB() {
   console.log("seeding db...");
 
-  for (let i = 1; i <= 20; i++) {
+  for (let i = 1; i <= 1000; i++) {
     const todo = generateTodo();
 
     try {
