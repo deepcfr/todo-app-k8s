@@ -1,34 +1,48 @@
-import { pool } from "../db";
 import { generateTodo } from "../generators/todo";
+import { pool } from "../lib/db";
 
-// seed 1000 todos
+const TOTAL_TODOS = 1000;
+const BATCH_SIZE = 500; // -> 2 batches
+
 async function seedDB() {
-  console.log("seeding db...");
+  console.log("-".repeat(5), "Seeding DB", "-".repeat(5));
+  const client = await pool.connect(); // -> single client
 
-  for (let i = 1; i <= 1000; i++) {
-    const todo = generateTodo();
+  try {
+    await client.query("BEGIN");
+    const todos = Array.from({ length: TOTAL_TODOS }, generateTodo);
 
-    try {
+    for (let i = 0; i < TOTAL_TODOS; i += BATCH_SIZE) {
+      const batch = todos.slice(i, i + BATCH_SIZE);
+
+      // dynamic placeholder
+      // ($1, $2), ($3, $4) ...
+      const placeholders = batch
+        .map((_, index) => {
+          const paramCount = index * 2; // -> because we have 2 columns
+          return `($${paramCount + 1}, $${paramCount + 2})`;
+        })
+        .join(",");
+
+      // flatten the todos
+      const values = batch.flatMap((todo) => [todo.text, todo.done]);
+
       await pool.query(
-        `
-            INSERT INTO todos(text, done)
-            VALUES($1, $2)
-            `,
-        [todo.text, todo.done],
+        `INSERT INTO todos (text, done) VALUES ${placeholders}`,
+        values,
       );
-    } catch (e) {
-      console.error(e);
-    }
 
-    // print on every *00 todos inserted
-    if (i % 100 === 0) {
-      console.log(`${i} todos inserted.`);
+      await client.query("COMMIT");
+      console.log("-".repeat(5), "Done", "-".repeat(5));
     }
+  } catch (error) {
+    // rollback
+    await client.query("ROLLBACK");
+    console.error("Error seeding db ", error);
+  } finally {
+    client.release();
+    await pool.end();
   }
-
-  console.log("Done");
-
-  await pool.end();
 }
 
 seedDB();

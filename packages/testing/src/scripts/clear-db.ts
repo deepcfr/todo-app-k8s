@@ -1,4 +1,4 @@
-import { pool } from "../db";
+import { pool } from "../lib/db";
 
 async function clearDB() {
   try {
