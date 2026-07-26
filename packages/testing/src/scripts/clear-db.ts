@@ -1,13 +1,15 @@
 import { pool } from "../lib/db";
 
 async function clearDB() {
+  const client = await pool.connect();
   try {
-    await pool.query(`TRUNCATE TABLE todos RESTART IDENTITY;`);
+    await client.query("TRUNCATE TABLE todos RESTART IDENTITY;");
   } catch (e) {
     console.error(e);
+  } finally {
+    client.release();
+    await pool.end();
   }
-
-  await pool.end();
 }
 
 clearDB();

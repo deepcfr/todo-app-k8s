@@ -27,7 +27,7 @@ async function seedDB() {
       // flatten the todos
       const values = batch.flatMap((todo) => [todo.text, todo.done]);
 
-      await pool.query(
+      await client.query(
         `INSERT INTO todos (text, done) VALUES ${placeholders}`,
         values,
       );
