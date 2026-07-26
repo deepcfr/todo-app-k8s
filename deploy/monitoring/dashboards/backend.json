@@ -4,19 +4,19 @@
   "metadata": {
     "name": "adm8d2r",
     "namespace": "default",
-    "uid": "69479823-1ac8-4c62-b8a3-e4decf191ea2",
-    "resourceVersion": "1784014263180989",
+    "uid": "fd542168-795b-47c4-be89-b3e128afefc2",
+    "resourceVersion": "1785091210464012",
     "generation": 2,
-    "creationTimestamp": "2026-07-14T06:46:59Z",
+    "creationTimestamp": "2026-07-26T18:30:41Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "754880160403456"
+      "grafana.app/deprecatedInternalID": "784102192041984"
     },
     "annotations": {
-      "grafana.app/createdBy": "user:bfs1wvognaxogf",
+      "grafana.app/createdBy": "user:cftaqi7dzj3lsb",
       "grafana.app/folder": "",
       "grafana.app/saved-from-ui": "Grafana v13.1.0 (b309c9bb3b)",
-      "grafana.app/updatedBy": "user:bfs1wvognaxogf",
-      "grafana.app/updatedTimestamp": "2026-07-14T07:31:03Z"
+      "grafana.app/updatedBy": "user:cftaqi7dzj3lsb",
+      "grafana.app/updatedTimestamp": "2026-07-26T18:40:10Z"
     }
   },
   "spec": {
@@ -154,7 +154,7 @@
                       "spec": {
                         "editorMode": "builder",
                         "expr": "histogram_quantile(0.95, sum by(le) (rate(todo_http_request_duration_seconds_bucket[1m])))",
-                        "legendFormat": "__auto",
+                        "legendFormat": "p95",
                         "range": true
                       }
                     },
@@ -178,11 +178,15 @@
                   "multiLane": false
                 },
                 "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "enableFacetedFilter": false,
+                  "calcs": [
+                    "min",
+                    "max",
+                    "mean"
+                  ],
+                  "displayMode": "table",
+                  "enableFacetedFilter": true,
                   "overflow": "ellipsis",
-                  "placement": "bottom",
+                  "placement": "right",
                   "showLegend": true
                 },
                 "tooltip": {
@@ -236,7 +240,7 @@
                     "lineStyle": {
                       "fill": "solid"
                     },
-                    "lineWidth": 1,
+                    "lineWidth": 2,
                     "pointSize": 4,
                     "scaleDistribution": {
                       "type": "linear"
@@ -283,7 +287,7 @@
                       "spec": {
                         "editorMode": "builder",
                         "expr": "histogram_quantile(0.99, sum by(le) (rate(todo_http_request_duration_seconds_bucket[1m])))",
-                        "legendFormat": "__auto",
+                        "legendFormat": "p99",
                         "range": true
                       }
                     },
@@ -365,7 +369,7 @@
                     "lineStyle": {
                       "fill": "solid"
                     },
-                    "lineWidth": 1,
+                    "lineWidth": 2,
                     "pointSize": 4,
                     "scaleDistribution": {
                       "type": "linear"
@@ -494,7 +498,7 @@
                     "lineStyle": {
                       "fill": "solid"
                     },
-                    "lineWidth": 1,
+                    "lineWidth": 2,
                     "pointSize": 4,
                     "scaleDistribution": {
                       "type": "linear"
@@ -541,7 +545,7 @@
                       "spec": {
                         "editorMode": "builder",
                         "expr": "sum(rate(todo_created_total[1m]))",
-                        "legendFormat": "__auto",
+                        "legendFormat": "todo create rate",
                         "range": true
                       }
                     },
@@ -602,8 +606,8 @@
                     "barAlignment": 0,
                     "barWidthFactor": 0.6,
                     "drawStyle": "line",
-                    "fillOpacity": 0,
-                    "gradientMode": "none",
+                    "fillOpacity": 27,
+                    "gradientMode": "opacity",
                     "hideFrom": {
                       "legend": false,
                       "tooltip": false,
@@ -611,7 +615,7 @@
                     },
                     "insertNulls": false,
                     "lineInterpolation": "linear",
-                    "lineWidth": 1,
+                    "lineWidth": 2,
                     "pointSize": 5,
                     "scaleDistribution": {
                       "type": "linear"
@@ -658,7 +662,7 @@
                       "spec": {
                         "editorMode": "builder",
                         "expr": "sum(rate(todo_deleted_total[1m]))",
-                        "legendFormat": "__auto",
+                        "legendFormat": "todo delete rate",
                         "range": true
                       }
                     },
@@ -732,7 +736,7 @@
                     "lineStyle": {
                       "fill": "solid"
                     },
-                    "lineWidth": 1,
+                    "lineWidth": 2,
                     "pointSize": 4,
                     "scaleDistribution": {
                       "type": "linear"
@@ -1209,7 +1213,7 @@
                       "spec": {
                         "editorMode": "builder",
                         "expr": "sum(rate(todo_http_requests_total[1m]))",
-                        "legendFormat": "__auto",
+                        "legendFormat": "request rate",
                         "range": true
                       }
                     },
@@ -1233,11 +1237,14 @@
                   "multiLane": false
                 },
                 "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
+                  "calcs": [
+                    "min",
+                    "max"
+                  ],
+                  "displayMode": "table",
                   "enableFacetedFilter": false,
                   "overflow": "ellipsis",
-                  "placement": "bottom",
+                  "placement": "right",
                   "showLegend": true
                 },
                 "tooltip": {
@@ -1249,6 +1256,7 @@
               "fieldConfig": {
                 "defaults": {
                   "unit": "reqps",
+                  "decimals": 1,
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -1703,6 +1711,7 @@
               "fieldConfig": {
                 "defaults": {
                   "unit": "reqps",
+                  "decimals": 2,
                   "thresholds": {
                     "mode": "percentage",
                     "steps": [
@@ -1922,8 +1931,8 @@
                       "spec": {
                         "x": 0,
                         "y": 0,
-                        "width": 7,
-                        "height": 7,
+                        "width": 12,
+                        "height": 8,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-13"
@@ -1933,10 +1942,10 @@
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
-                        "x": 7,
+                        "x": 12,
                         "y": 0,
-                        "width": 7,
-                        "height": 7,
+                        "width": 12,
+                        "height": 8,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-14"
@@ -1946,8 +1955,8 @@
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
-                        "x": 14,
-                        "y": 0,
+                        "x": 0,
+                        "y": 8,
                         "width": 5,
                         "height": 7,
                         "element": {
@@ -1959,8 +1968,8 @@
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
-                        "x": 19,
-                        "y": 0,
+                        "x": 5,
+                        "y": 8,
                         "width": 5,
                         "height": 7,
                         "element": {
@@ -1983,8 +1992,8 @@
     "tags": [],
     "timeSettings": {
       "timezone": "browser",
-      "from": "now-6h",
-      "to": "now",
+      "from": "2026-07-26T11:39:49.173Z",
+      "to": "2026-07-26T21:30:41.906Z",
       "autoRefresh": "",
       "autoRefreshIntervals": [
         "5s",
