@@ -3,8 +3,12 @@ import http from "k6/http";
 const BASE_URL = __ENV.BASE_URL || "http://todo-app.local";
 
 // helper functions
-export function getTodos() {
+export function getAllTodos() {
   return http.get(`${BASE_URL}/api/todos`);
+}
+
+export function getTodo(id) {
+  return http.get(`${BASE_URL}/api/todos/${id}`);
 }
 
 export function createTodo(text) {

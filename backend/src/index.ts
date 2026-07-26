@@ -54,7 +54,7 @@ apiRouter.post("/todos", async (req, res) => {
 
   todoCreatedTotal.inc();
 
-  res.json(result.rows[0]);
+  res.status(201).json(result.rows[0]);
 });
 
 apiRouter.put("/todos/:id", async (req, res) => {

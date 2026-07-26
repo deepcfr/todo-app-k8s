@@ -1,6 +1,6 @@
 import http from "k6/http";
 import { sleep, check } from "k6";
-import { getTodos } from "../lib/api.js";
+import { getAllTodos } from "../lib/api.js";
 
 export const options = {
   stages: [
@@ -15,7 +15,7 @@ export const options = {
 };
 
 export default function () {
-  const res = getTodos()
+  const res = getAllTodos();
 
   check(res, {
     "status is 200": (r) => r.status === 200,
