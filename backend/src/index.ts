@@ -21,14 +21,15 @@ app.use(express.json());
 // db pool
 const pool = new Pool({
   connectionString:
-  process.env.DATABASE_URL || "postgresql://deep:smthn@localhost:5432/todo-db",
+    process.env.DATABASE_URL ||
+    "postgresql://deep:smthn@localhost:5432/todo-db",
 });
 
 // collect metrics
-app.get("/metrics", async(req, res) => {
+app.get("/metrics", async (req, res) => {
   res.setHeader("Content-Type", metricsRegistry.contentType);
   res.end(await metricsRegistry.metrics());
-})
+});
 
 const apiRouter = express.Router();
 
@@ -43,6 +44,14 @@ apiRouter.get("/health", (req, res) => {
 apiRouter.get("/todos", async (req, res) => {
   const result = await pool.query("SELECT * FROM todos");
   res.json(result.rows);
+});
+
+// get todos by id
+apiRouter.get("/todos/:id", async (req, res) => {
+  const id = req.params.id;
+  const result = await pool.query("SELECT * FROM todos WHERE id = $1", [id]);
+  if (!result) return res.status(404).json({ message: "todo not found" });
+  return res.status(200).json(result.rows[0]);
 });
 
 apiRouter.post("/todos", async (req, res) => {
@@ -122,7 +131,6 @@ async function initDB() {
 // debug
 console.log("starting..");
 console.log(process.env.DATABASE_URL);
-
 
 async function startServer() {
   await initDB();

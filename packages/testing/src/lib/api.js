@@ -22,7 +22,7 @@ export function createTodo(text) {
 }
 
 export function updateTodo(id, fields) {
-  return http.put(`${BASE_URL}/api/todos`, JSON.stringify(fields), {
+  return http.put(`${BASE_URL}/api/todos/${id}`, JSON.stringify(fields), {
     headers: { "Content-Type": "application/json" },
   });
 }
