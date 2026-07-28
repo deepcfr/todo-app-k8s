@@ -1,0 +1,15 @@
+# deny everything, cut off all communication to and from all the pods
+{{- if .Values.networkPolicy.defaultDenyEnabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all-network-policy
+  namespace: {{ .Values.global.namespace }}
+spec:
+  podSelector: {} # select all pods
+  policyTypes:
+    - Ingress
+    - Egress
+
+  # zero entry rules for the both policies block every incoming and outgoing traffic
+{{- end }}

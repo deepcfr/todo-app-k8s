@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: todo-app-network-policy
+  name: database-network-policy
   namespace: {{ .Values.global.namespace }}
 spec:
   podSelector:
@@ -10,9 +10,11 @@ spec:
 
   policyTypes:
     - Ingress
+    - Egress
 
   ingress:
     - from:
+        # allow backend pods
         - podSelector:
             matchLabels:
               app: backend
@@ -25,4 +27,6 @@ spec:
 
       ports:
         - protocol: TCP
-          port: 5432
+          port: {{ .Values.database.service.targetPort }}
+
+  # no egress rules listed, postgres never initiates outbound traffic

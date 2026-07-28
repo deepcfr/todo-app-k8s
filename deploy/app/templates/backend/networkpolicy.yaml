@@ -1,0 +1,58 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: backend-network-policy
+  namespace: {{ .Values.global.namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+
+  policyTypes:
+    - Ingress
+    - Egress
+
+  ingress:
+    - from:
+        # allow frontend pods
+        - podSelector:
+            matchLabels:
+              app: frontend
+        # allow nginx ingress controller
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+        # allow prometheus for /metrics
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+
+      ports:
+        - protocol: TCP
+          port: {{ .Values.backend.service.targetPort }}
+
+  egress:
+    - to:
+      # dns resolution -> allows egress traffic to coreDNS, running in kube-system namespace
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: kube-system
+
+      ports:
+        - protocol: UDP
+          port: 53 # universal standard port for dns network traffic
+        - protocol: TCP
+          port: 53
+
+    - to:
+      # allow database pods
+      - podSelector:
+          matchLabels:
+            app: database
+      
+      ports:
+        - protocol: TCP
+          port: {{ .Values.database.service.targetPort }}
+
+
+      

@@ -114,3 +114,7 @@ ingress:
   className: nginx
   tls:
     enabled: false
+
+# disable default-deny-networkpolicy
+networkPolicy:
+  defaultDenyEnabled: false
