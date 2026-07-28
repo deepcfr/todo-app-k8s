@@ -48,6 +48,34 @@ spec:
           resources:
           {{- toYaml .Values.database.resources | nindent 12 }}
 
+          # add health probes
+          # use exec instead of httpGet
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - {{ .Values.database.auth.postgresUser }}
+                - -d
+                - {{ .Values.database.auth.postgresDB }}
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 5
+
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - {{ .Values.database.auth.postgresUser }}
+                - -d
+                - {{ .Values.database.auth.postgresDB }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 5
+
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data
