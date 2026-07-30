@@ -33,6 +33,27 @@ app.get("/metrics", async (req, res) => {
 
 const apiRouter = express.Router();
 
+// cpu stress endpoint
+apiRouter.get("/debug/cpu", (req, res) => {
+  const BIG_VALUE = Number(req.query.BIG_VALUE as string);
+
+  if (Number.isNaN(BIG_VALUE) || BIG_VALUE <= 0) {
+    return res.status(400).json({
+      error: "BIG_VALUE must be a positive integer",
+    });
+  }
+
+  let sum = 0;
+
+  for (let i = 1; i < BIG_VALUE; ++i) {
+    sum += i;
+  }
+
+  res.json({
+    sum,
+  });
+});
+
 apiRouter.get("/", (req, res) => {
   res.json({ message: "meow meow" });
 });

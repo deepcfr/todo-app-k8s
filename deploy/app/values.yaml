@@ -5,7 +5,7 @@ global: # shared accross the app
 
 # component specific
 backend:
-  replicaCount: 1
+  replicaCount: 2
 
   image:
     repository: todo-app-backend
@@ -23,6 +23,22 @@ backend:
     requests:
       cpu: 100m
       memory: 128Mi
+
+  autoscaling:
+    enabled: true
+
+    minReplicas: 2
+    maxReplicas: 8
+
+    targetCPUUtilizationPercentage: 60
+    # targetMemoryUtilizationPercentage: 70
+
+    behavior:
+      scaleUp:
+        stabilizationWindowSeconds: 0
+
+      scaleDown:
+        stabilizationWindowSeconds: 300
 
 frontend:
   replicaCount: 1
