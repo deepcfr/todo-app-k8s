@@ -35,7 +35,7 @@ jobs:
               - 'frontend/**'
             shared:
               - 'docker-compose.yml'
-              - '.github/workflows/ci.yml'
+              - '.github/workflows/**'
 
   quality-gate-backend:
     name: Backend quality gate
