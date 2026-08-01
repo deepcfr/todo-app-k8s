@@ -6,7 +6,6 @@ import { metricsRegistry, todoCreatedTotal, todoDeletedTotal } from "./metrics";
 import { requestLogger } from "./middlewares/requestLogger.middleware";
 
 const app = express();
-const port = 8080;
 
 app.use(
   cors({
@@ -21,8 +20,7 @@ app.use(express.json());
 // db pool
 const pool = new Pool({
   connectionString:
-    process.env.DATABASE_URL ||
-    "postgresql://deep:smthn@localhost:5432/todo-db",
+    process.env.DATABASE_URL || "postgresql://deep:smthn@postgres:5432/todo-db",
 });
 
 // collect metrics
@@ -63,104 +61,118 @@ apiRouter.get("/health", (req, res) => {
 });
 
 apiRouter.get("/todos", async (req, res) => {
-  const result = await pool.query("SELECT * FROM todos");
-  res.json(result.rows);
+  try {
+    const result = await pool.query("SELECT * FROM todos");
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "internal server error" });
+  }
 });
 
 // get todos by id
 apiRouter.get("/todos/:id", async (req, res) => {
-  const id = req.params.id;
-  const result = await pool.query("SELECT * FROM todos WHERE id = $1", [id]);
-  if (!result) return res.status(404).json({ message: "todo not found" });
-  return res.status(200).json(result.rows[0]);
+  try {
+    const id = req.params.id;
+    const result = await pool.query("SELECT * FROM todos WHERE id = $1", [id]);
+    if (!result) return res.status(404).json({ message: "todo not found" });
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "internal server error" });
+  }
 });
 
 apiRouter.post("/todos", async (req, res) => {
-  const { text } = req.body;
-  const result = await pool.query(
-    "INSERT INTO todos (text) VALUES ($1) RETURNING *",
-    [text],
-  );
+  try {
+    const { text } = req.body;
 
-  todoCreatedTotal.inc();
+    if (typeof text !== "string" || text.trim().length === 0) {
+      return res.status(400).json({ error: "text is required" });
+    }
 
-  res.status(201).json(result.rows[0]);
+    const result = await pool.query(
+      "INSERT INTO todos (text) VALUES ($1) RETURNING *",
+      [text],
+    );
+
+    todoCreatedTotal.inc();
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "internal server error" });
+  }
 });
 
 apiRouter.put("/todos/:id", async (req, res) => {
-  const id = req.params.id;
-  const { text, done } = req.body;
+  try {
+    const id = req.params.id;
+    const { text, done } = req.body;
 
-  if (text === undefined && done === undefined) {
-    res.status(400).json({ error: "nothing to update" });
-    return;
+    if (text === undefined && done === undefined) {
+      return res.status(400).json({ error: "nothing to update" });
+    }
+
+    if (
+      text !== undefined &&
+      (typeof text !== "string" || text.trim().length === 0)
+    ) {
+      return res.status(400).json({ error: "text cannot be empty" });
+    }
+
+    const result = await pool.query(
+      "UPDATE todos SET text = COALESCE($1, text), done = COALESCE($2, done) WHERE id = $3 RETURNING *",
+      [text ?? null, done ?? null, id],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "todo not found" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "internal server error" });
   }
-
-  const result = await pool.query(
-    "UPDATE todos SET text = COALESCE($1, text), done = COALESCE($2, done) WHERE id = $3 RETURNING *",
-    [text ?? null, done ?? null, id],
-  );
-
-  res.json(result.rows[0]);
 });
 
 // bulk delete todos after testing
 apiRouter.delete("/todos", async (req, res) => {
-  const result = await pool.query("DELETE FROM todos RETURNING *");
-  const deletedCount = result.rowCount ?? 0;
+  try {
+    const result = await pool.query("DELETE FROM todos RETURNING *");
+    const deletedCount = result.rowCount ?? 0;
 
-  if (deletedCount > 0) {
-    todoDeletedTotal.inc(deletedCount);
+    if (deletedCount > 0) {
+      todoDeletedTotal.inc(deletedCount);
+    }
+
+    res.json({ deletedCount, todos: result.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "internal server error" });
   }
-
-  res.json({ deletedCount, todos: result.rows });
 });
 
 apiRouter.delete("/todos/:id", async (req, res) => {
-  const id = req.params.id;
-  const result = await pool.query(
-    "DELETE FROM todos WHERE id = $1 RETURNING *",
-    [id],
-  );
+  try {
+    const id = req.params.id;
+    const result = await pool.query(
+      "DELETE FROM todos WHERE id = $1 RETURNING *",
+      [id],
+    );
 
-  todoDeletedTotal.inc();
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "todo not found" });
+    }
 
-  res.json(result.rows[0]);
+    todoDeletedTotal.inc();
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "internal server error" });
+  }
 });
 
 app.use("/api", apiRouter);
 
-// add the db if doesnt exist
-async function initDB() {
-  while (true) {
-    try {
-      await pool.query(`CREATE TABLE IF NOT EXISTS todos (
-        id SERIAL PRIMARY KEY,
-        text TEXT NOT NULL,
-        done BOOLEAN DEFAULT FALSE,
-        created_at TIMESTAMP DEFAULT NOW()
-      )`);
-      console.log("database initialized");
-      break;
-    } catch (err: any) {
-      console.log("waiting for database...", err.message);
-      await new Promise((res) => setTimeout(res, 2000));
-    }
-  }
-}
-
-// debug
-console.log("starting..");
-console.log(process.env.DATABASE_URL);
-
-async function startServer() {
-  await initDB();
-
-  console.log("DB up..");
-
-  app.listen(port, "0.0.0.0", () => {
-    console.log(`server running on port -> 8080`);
-  });
-}
-
-startServer();
+export { app, pool };
