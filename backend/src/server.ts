@@ -1,4 +1,4 @@
-import { app, pool } from ".";
+import { app, pool } from "./index";
 
 const PORT = parseInt(process.env.PORT as string) || 8080;
 
