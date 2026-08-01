@@ -1,6 +1,6 @@
 FROM oven/bun:1-alpine
 WORKDIR /app
-RUN apk add --no-cache dumb-init curl
+RUN apk update && apk upgrade --no-cache && apk add --no-cache dumb-init curl && rm -rf /var/cache/apk/*
 RUN addgroup --system --gid 1001 bunjs && \
     adduser --system --uid 1001 meow
 COPY --chown=meow:bunjs package.json bun.lock ./
