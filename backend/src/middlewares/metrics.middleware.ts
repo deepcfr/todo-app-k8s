@@ -11,7 +11,7 @@ const ignoredEndpoints = new Set(["/health", "/metrics"]);
 export function metricsMiddleware(
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) {
   if (ignoredEndpoints.has(req.path)) return next();
 

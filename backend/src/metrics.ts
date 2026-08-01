@@ -1,5 +1,5 @@
 import {
-  collectDefaultMetrics,
+  // collectDefaultMetrics,
   Counter,
   Gauge,
   Histogram,

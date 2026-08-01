@@ -11,7 +11,7 @@ app.use(
   cors({
     origin: process.env.FRONTEND_URL || "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE"],
-  }),
+  })
 );
 app.use(metricsMiddleware);
 app.use(requestLogger);
@@ -75,7 +75,8 @@ apiRouter.get("/todos/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const result = await pool.query("SELECT * FROM todos WHERE id = $1", [id]);
-    if (result.rows.length === 0) return res.status(404).json({ message: "todo not found" });
+    if (result.rows.length === 0)
+      return res.status(404).json({ message: "todo not found" });
     res.status(200).json(result.rows[0]);
   } catch (error) {
     console.error(error);
@@ -93,7 +94,7 @@ apiRouter.post("/todos", async (req, res) => {
 
     const result = await pool.query(
       "INSERT INTO todos (text) VALUES ($1) RETURNING *",
-      [text],
+      [text]
     );
 
     todoCreatedTotal.inc();
@@ -122,7 +123,7 @@ apiRouter.put("/todos/:id", async (req, res) => {
 
     const result = await pool.query(
       "UPDATE todos SET text = COALESCE($1, text), done = COALESCE($2, done) WHERE id = $3 RETURNING *",
-      [text ?? null, done ?? null, id],
+      [text ?? null, done ?? null, id]
     );
 
     if (result.rows.length === 0) {
@@ -158,7 +159,7 @@ apiRouter.delete("/todos/:id", async (req, res) => {
     const id = req.params.id;
     const result = await pool.query(
       "DELETE FROM todos WHERE id = $1 RETURNING *",
-      [id],
+      [id]
     );
 
     if (result.rows.length === 0) {

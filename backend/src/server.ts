@@ -14,9 +14,9 @@ async function initDB() {
       )`);
       console.log("database initialized");
       break;
-    } catch (err: any) {
-      console.log("waiting for database...", err.message);
-      await new Promise((res) => setTimeout(res, 2000));
+    } catch (error) {
+      console.error("waiting for database...", error);
+      await new Promise(res => setTimeout(res, 2000));
     }
   }
 }

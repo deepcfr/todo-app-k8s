@@ -19,7 +19,7 @@ describe("todo routes", () => {
     expect(createResponse.body.done).toBe(false);
 
     const getResponse = await request(app).get(
-      `/api/todos/${createResponse.body.id}`,
+      `/api/todos/${createResponse.body.id}`
     );
     expect(getResponse.status).toBe(200);
     expect(getResponse.body.id).toBe(createResponse.body.id);
@@ -49,7 +49,7 @@ describe("todo routes", () => {
     expect(updateResponse.body.done).toBe(true);
 
     const deleteResponse = await request(app).delete(
-      `/api/todos/${created.body.id}`,
+      `/api/todos/${created.body.id}`
     );
     expect(deleteResponse.status).toBe(200);
 
