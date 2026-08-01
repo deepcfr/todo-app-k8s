@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 
-
 declare global {
   interface Window {
     APP_CONFIG: {
       API_URL: string;
-    }
+    };
   }
 }
 
@@ -25,7 +24,7 @@ export default function App() {
 
   useEffect(() => {
     fetch(`${API}/todos`)
-      .then((r) => r.json())
+      .then(r => r.json())
       .then(setTodos);
   }, []);
 
@@ -43,7 +42,7 @@ export default function App() {
 
   const remove = async (id: number) => {
     await fetch(`${API}/todos/${id}`, { method: "DELETE" });
-    setTodos(todos.filter((t) => t.id !== id));
+    setTodos(todos.filter(t => t.id !== id));
   };
 
   const toggle = async (todo: Todo) => {
@@ -53,7 +52,7 @@ export default function App() {
       body: JSON.stringify({ done: !todo.done }),
     });
     const updated = await res.json();
-    setTodos(todos.map((t) => (t.id === updated.id ? updated : t)));
+    setTodos(todos.map(t => (t.id === updated.id ? updated : t)));
   };
 
   const startEdit = (todo: Todo) => {
@@ -74,11 +73,11 @@ export default function App() {
       body: JSON.stringify({ text: editText }),
     });
     const updated = await res.json();
-    setTodos(todos.map((t) => (t.id === updated.id ? updated : t)));
+    setTodos(todos.map(t => (t.id === updated.id ? updated : t)));
     cancelEdit();
   };
 
-  const remaining = todos.filter((t) => !t.done).length;
+  const remaining = todos.filter(t => !t.done).length;
 
   return (
     <>
@@ -104,8 +103,8 @@ export default function App() {
           <div className="flex gap-2 mb-6">
             <input
               value={text}
-              onChange={(e) => setText(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && add()}
+              onChange={e => setText(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && add()}
               placeholder="what needs to be done?"
               className="flex-1 bg-white border border-stone-300 rounded-lg px-4 py-2.5 text-sm text-stone-900 placeholder:text-stone-500 focus:outline-none focus:border-stone-700 focus:ring-2 focus:ring-stone-300 transition"
             />
@@ -124,7 +123,7 @@ export default function App() {
                 nothing here yet
               </p>
             )}
-            {todos.map((todo) => (
+            {todos.map(todo => (
               <div
                 key={todo.id}
                 className="flex items-center gap-3 bg-white border border-stone-300 rounded-lg px-4 py-3 group hover:border-stone-400 transition-colors"
@@ -165,8 +164,8 @@ export default function App() {
                     <input
                       autoFocus
                       value={editText}
-                      onChange={(e) => setEditText(e.target.value)}
-                      onKeyDown={(e) => {
+                      onChange={e => setEditText(e.target.value)}
+                      onKeyDown={e => {
                         if (e.key === "Enter") saveEdit(todo.id);
                         if (e.key === "Escape") cancelEdit();
                       }}
@@ -177,7 +176,9 @@ export default function App() {
                       onClick={() => toggle(todo)}
                       onDoubleClick={() => startEdit(todo)}
                       className={`flex-1 text-sm cursor-pointer transition-colors select-none ${
-                        todo.done ? "line-through text-stone-500" : "text-stone-900"
+                        todo.done
+                          ? "line-through text-stone-500"
+                          : "text-stone-900"
                       }`}
                     >
                       {todo.text}
