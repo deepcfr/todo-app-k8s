@@ -9,4 +9,4 @@ COPY --chown=meow:bunjs . .
 USER meow
 EXPOSE 8080
 ENTRYPOINT ["dumb-init", "--"]
-CMD ["bun", "run", "src/index.ts"]
+CMD ["bun", "run", "src/server.ts"]

@@ -2,6 +2,7 @@
   "name": "k8s-app",
   "module": "src/server.ts",
   "scripts": {
+    "start": "bun run src/server.ts",
     "build": "tsc --noEmit",
     "lint": "eslint .",
     "format:check": "prettier --check .",
