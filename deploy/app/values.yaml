@@ -7,7 +7,7 @@ backend:
   replicaCount: 2
   image:
     repository: ghcr.io/deepsoumyaaa/todo-app-backend
-    tag: b5eed7f98f5db6b5d0703ce8bbb3f5000a62c33e
+    tag: sha-fb7646d61c7485b05b5b2669d305ff5a3c5f3c88
     pullPolicy: IfNotPresent
   service:
     port: 80
