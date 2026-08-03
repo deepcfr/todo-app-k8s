@@ -215,7 +215,14 @@ jobs:
     name: Update backend image tag in github
     runs-on: ubuntu-latest
     needs: docker-build-backend
+
+    # dont change the manifest on every pr, run only if its merged on main or in case of a direct push to main
     if: github.ref == 'refs/heads/main'
+
+    permissions:
+      contents: write
+      packages: write
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -294,7 +301,14 @@ jobs:
     name: Update frontend image tag in github
     runs-on: ubuntu-latest
     needs: docker-build-frontend
+
+    # dont change the manifest on every pr, run only if its merged on main or in case of a direct push to main
     if: github.ref == 'refs/heads/main'
+
+    permissions:
+      contents: write
+      packages: write
+      
     steps:
       - uses: actions/checkout@v4
         with:
