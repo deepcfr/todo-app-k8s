@@ -177,3 +177,5 @@ apiRouter.delete("/todos/:id", async (req, res) => {
 app.use("/api", apiRouter);
 
 export { app, pool };
+
+// this is just a comment to check the ci pipeline
