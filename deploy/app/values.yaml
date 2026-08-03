@@ -4,7 +4,7 @@ global: # shared accross the app
   domain: todo-app.local
 # component specific
 backend:
-  replicaCount: 2
+  replicaCount: 4
   image:
     repository: ghcr.io/deepsoumyaaa/todo-app-backend
     tag: sha-66c04ab0dd89d3b98cab4bb358b6f5ed45862839
