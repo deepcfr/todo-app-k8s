@@ -6,7 +6,7 @@ global: # shared accross the app
 backend:
   replicaCount: 4
   image:
-    repository: ghcr.io/deepsoumyaaa/todo-app-backend
+    repository: ghcr.io/deepcfr/todo-app-backend
     tag: sha-66c04ab0dd89d3b98cab4bb358b6f5ed45862839
     pullPolicy: IfNotPresent
   service:
@@ -34,7 +34,7 @@ backend:
 frontend:
   replicaCount: 1
   image:
-    repository: ghcr.io/deepsoumyaaa/todo-app-frontend
+    repository: ghcr.io/deepcfr/todo-app-frontend
     tag: sha-fb7646d61c7485b05b5b2669d305ff5a3c5f3c88
     pullPolicy: IfNotPresent
   service:
