@@ -1,5 +1,12 @@
 grafana:
   adminPassword: admin # set the password for user admin
+  # load the dashboards automatically
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
+      searchNamespace: ALL
 
 # production options
 #   # enable persistent storage
