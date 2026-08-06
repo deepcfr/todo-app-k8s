@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: grafana-dashboard-postgres
+  name: grafana-dashboard-kubernetes
   namespace: monitoring
   labels:
     grafana_dashboard: "1" # tells Grafana to grab this file

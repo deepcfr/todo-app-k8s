@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: todo-app-alerts
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  groups:
+    - name: todo-app.rules
+      rules:
+        - alert: BackendHighCPU
+          expr: |
+            sum(rate(container_cpu_usage_seconds_total{namespace="todo-app", pod=~"backend.*"}[1m])) > 0.01
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Backend CPU usage is high"
+            description: "Backend pods have sustained CPU usage above threshold for 2 minutes."

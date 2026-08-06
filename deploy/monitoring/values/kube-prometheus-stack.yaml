@@ -1,3 +1,8 @@
+# disable all default
+# i dont want a lot of bs alerts on my telegram
+defaultRules:
+  create: false
+
 grafana:
   adminPassword: admin # set the password for user admin
   # load the dashboards automatically
@@ -8,16 +13,37 @@ grafana:
       labelValue: "1"
       searchNamespace: ALL
 
-# production options
-#   # enable persistent storage
-#   persistence:
-#     enabled: true
-#     type: pvc
-#     size: 5Gi
+alertmanager:
+  config:
+    global:
+      resolve_timeout: 2m
+    route:
+      group_by: ["alertname", "namespace"]
+      group_wait: 5s
+      group_interval: 30s
+      repeat_interval: 1h
+      receiver: "telegram-notifications"
+      routes:
+        - matchers:
+            - alertname = "Watchdog"
+          receiver: "null"
+    receivers:
+      - name: "null"
+      - name: "telegram-notifications"
+        telegram_configs:
+          - bot_token: "<TELEGRAM_BOT_TOKEN>"
+            chat_id: "<CHAT_ID>"
+            send_resolved: true
+            parse_mode: HTML
 
-#     accessModes:
-#       - ReadWriteOnce
-
-# prometheus:
-#   prometheusSpec:
-#     retention: 7d # TSDB data is stored for 7 days
+prometheus:
+  prometheusSpec:
+    retention: 1d
+    evaluationInterval: 15s
+    scrapeInterval: 15s
+    ruleSelector:
+      matchLabels:
+        release: monitoring
+    ruleNamespaceSelector:
+      matchNames:
+        - monitoring
