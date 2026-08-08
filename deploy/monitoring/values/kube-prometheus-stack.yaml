@@ -44,6 +44,4 @@ prometheus:
     ruleSelector:
       matchLabels:
         release: monitoring
-    ruleNamespaceSelector:
-      matchNames:
-        - monitoring
+    ruleNamespaceSelector: {}

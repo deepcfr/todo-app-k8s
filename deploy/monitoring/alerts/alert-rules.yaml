@@ -10,21 +10,22 @@ spec:
     - name: todo-app.backend
       rules:
         - alert: BackendHighCPU
-          expr: |
-            100 *
-            sum(rate(container_cpu_usage_seconds_total{
-              namespace="todo-app",
-              pod=~"backend.*"
-            }[2m])) /
-            sum(kube_pod_container_resource_requests{
-              namespace="todo-app",
-              pod=~"backend.*",
-              resource="cpu",
-              unit="core"
-            }) > 80
+          expr: >
+            100 * sum(rate(container_cpu_usage_seconds_total{namespace="todo-app", pod=~"backend.*"}[2m])) / sum(kube_pod_container_resource_requests{namespace="todo-app", pod=~"backend.*", resource="cpu", unit="core"}) > 80
           for: 1m
           labels:
             severity: warning
           annotations:
             summary: "Backend CPU usage is high"
             description: "Backend pods are using more than 80% of requested CPU over a 2-minute rate window and the condition has lasted for 1 minute."
+
+        - alert: BackendHighMemory
+          expr: |
+            100 * (container_memory_working_set_bytes{namespace="todo-app", pod=~"backend.*", container="todo-app-backend"} / on(namespace, pod, container) kube_pod_container_resource_limits{namespace="todo-app", pod=~"backend.*", container="todo-app-backend", resource="memory", unit="byte"}) > 80
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Backend memory usage is high"
+            description: "A backend pod has been using more than 80% of its memory limit for 1 minute."
+
