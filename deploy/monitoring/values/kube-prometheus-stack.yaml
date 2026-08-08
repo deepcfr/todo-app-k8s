@@ -31,8 +31,8 @@ alertmanager:
       - name: "null"
       - name: "telegram-notifications"
         telegram_configs:
-          - bot_token: "<TELEGRAM_BOT_TOKEN>"
-            chat_id: "<CHAT_ID>"
+          - bot_token: "8944993360:AAG8j6ehpJ121PZPz3F-PKragqHMgpjbalk"
+            chat_id: -5539340070
             send_resolved: true
             parse_mode: HTML
 
@@ -44,6 +44,4 @@ prometheus:
     ruleSelector:
       matchLabels:
         release: monitoring
-    ruleNamespaceSelector:
-      matchNames:
-        - monitoring
+    ruleNamespaceSelector: {}
