@@ -7,14 +7,24 @@ metadata:
     release: monitoring
 spec:
   groups:
-    - name: todo-app.rules
+    - name: todo-app.backend
       rules:
         - alert: BackendHighCPU
           expr: |
-            sum(rate(container_cpu_usage_seconds_total{namespace="todo-app", pod=~"backend.*"}[1m])) > 0.01
+            100 *
+            sum(rate(container_cpu_usage_seconds_total{
+              namespace="todo-app",
+              pod=~"backend.*"
+            }[2m])) /
+            sum(kube_pod_container_resource_requests{
+              namespace="todo-app",
+              pod=~"backend.*",
+              resource="cpu",
+              unit="core"
+            }) > 80
           for: 1m
           labels:
             severity: warning
           annotations:
             summary: "Backend CPU usage is high"
-            description: "Backend pods have sustained CPU usage above threshold for 2 minutes."
+            description: "Backend pods are using more than 80% of requested CPU over a 2-minute rate window and the condition has lasted for 1 minute."
