@@ -12,6 +12,13 @@ grafana:
       label: grafana_dashboard
       labelValue: "1"
       searchNamespace: ALL
+  # add loki as an additional data source
+  additionalDataSources:
+    - name: loki
+      type: loki
+      url: http://loki-gateway.monitoring.svc.cluster.local
+      access: proxy
+      isDefault: false
 
 alertmanager:
   config:

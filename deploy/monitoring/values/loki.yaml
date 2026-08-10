@@ -1,0 +1,51 @@
+# all loki components run in a single pod, good for testing but SPOF
+deploymentMode: Monolithic
+
+singleBinary:
+  replicas: 1 # single pod for testing
+
+# component replicas
+write:
+  replicas: 0
+read:
+  replicas: 0
+backend:
+  replicas: 0
+
+# disable caching
+chunksCache:
+  enabled: false
+
+resultsCache:
+  enabled: false
+
+memcached:
+  enabled: false
+
+memcachedExporter:
+  enabled: false
+
+# tests if loki's basic ingestion/query path working
+# by writing and querying its test log
+lokiCanary:
+  enabled: false
+
+# disable helm tests
+test:
+  enabled: false
+
+# loki core config
+loki:
+  auth_enabled: false
+
+  commonConfig:
+    replication_factor: 1
+
+  # use filesystem storage for kinD
+  storage:
+    type: filesystem
+    filesystem:
+      chunks_directory: /var/loki/chunks
+      rules_directory: /var/loki/rules
+
+  useTestSchema: true
