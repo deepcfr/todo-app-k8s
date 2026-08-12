@@ -4,6 +4,7 @@ import { Pool } from "pg";
 import { metricsMiddleware } from "./middlewares/metrics.middleware";
 import { metricsRegistry, todoCreatedTotal, todoDeletedTotal } from "./metrics";
 import { requestLogger } from "./middlewares/requestLogger.middleware";
+import { logger } from "./logger";
 
 const app = express();
 
@@ -65,7 +66,14 @@ apiRouter.get("/todos", async (req, res) => {
     const result = await pool.query("SELECT * FROM todos");
     res.json(result.rows);
   } catch (error) {
-    console.error(error);
+    logger.error("Failed to fetch todos", {
+      event: "todo_fetch_failed",
+      method: req.method,
+      path: req.path,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+
     res.status(500).json({ error: "internal server error" });
   }
 });
@@ -79,7 +87,15 @@ apiRouter.get("/todos/:id", async (req, res) => {
       return res.status(404).json({ message: "todo not found" });
     res.status(200).json(result.rows[0]);
   } catch (error) {
-    console.error(error);
+    logger.error("Failed to fetch todo", {
+      event: "todo_fetch_by_id_failed",
+      method: req.method,
+      path: req.path,
+      todo_id: req.params.id,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+
     res.status(500).json({ error: "internal server error" });
   }
 });
@@ -99,8 +115,15 @@ apiRouter.post("/todos", async (req, res) => {
 
     todoCreatedTotal.inc();
     res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    logger.error("Failed to create todo", {
+      event: "todo_create_failed",
+      method: req.method,
+      path: req.path,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+
     res.status(500).json({ error: "internal server error" });
   }
 });
@@ -131,8 +154,15 @@ apiRouter.put("/todos/:id", async (req, res) => {
     }
 
     res.json(result.rows[0]);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    logger.error("Failed to update todo", {
+      event: "todo_update_failed",
+      method: req.method,
+      path: req.path,
+      todo_id: req.params.id,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
     res.status(500).json({ error: "internal server error" });
   }
 });
@@ -148,8 +178,15 @@ apiRouter.delete("/todos", async (req, res) => {
     }
 
     res.json({ deletedCount, todos: result.rows });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    logger.error("Failed to delete all todos", {
+      event: "todo_delete_all_failed",
+      method: req.method,
+      path: req.path,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+
     res.status(500).json({ error: "internal server error" });
   }
 });
@@ -168,8 +205,16 @@ apiRouter.delete("/todos/:id", async (req, res) => {
 
     todoDeletedTotal.inc();
     res.json(result.rows[0]);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    logger.error("Failed to delete todo", {
+      event: "todo_delete_failed",
+      method: req.method,
+      path: req.path,
+      todo_id: req.params.id,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+
     res.status(500).json({ error: "internal server error" });
   }
 });
@@ -177,5 +222,3 @@ apiRouter.delete("/todos/:id", async (req, res) => {
 app.use("/api", apiRouter);
 
 export { app, pool };
-
-// this is just a comment to check the ci pipeline

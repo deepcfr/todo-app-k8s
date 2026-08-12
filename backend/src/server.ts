@@ -1,4 +1,5 @@
 import { app, pool } from "./index";
+import { logger } from "./logger";
 
 const PORT = parseInt(process.env.PORT as string) || 8080;
 
@@ -15,23 +16,34 @@ async function initDB() {
       console.log("database initialized");
       break;
     } catch (error) {
-      console.error("waiting for database...", error);
+      logger.warn("Waiting for database", {
+        event: "database_unavailable",
+        error: error instanceof Error ? error.message : String(error),
+      });
+
       await new Promise(res => setTimeout(res, 2000));
     }
   }
 }
 
-// debug
-console.log("starting..");
-console.log(process.env.DATABASE_URL);
+logger.info("Starting backend", {
+  event: "server_starting",
+  port: PORT,
+});
 
 async function startServer() {
   await initDB();
 
-  console.log("DB up..");
+  logger.info("Database initialized", {
+    event: "database_initialized",
+  });
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`server running on port -> 8080`);
+    logger.info("Server listening", {
+      event: "server_listening",
+      host: "0.0.0.0",
+      port: PORT,
+    });
   });
 }
 
