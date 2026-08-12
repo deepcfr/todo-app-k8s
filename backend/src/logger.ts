@@ -17,11 +17,19 @@ function writeLog(level: LogLevel, message: string, context?: LogContext) {
     ...context,
   };
 
+  const json = JSON.stringify(entry);
+
+  // fix JSONParserErr on loki
+  // logs start with [INFO/WARN/ERROR] -> json parsing fails
+  if (!process.stdout.isTTY) {
+    console.log(json);
+    return;
+  }
+
+  // log normally on terminal
   const color = colors[level];
 
-  console.log(
-    `${color}[${level.toUpperCase()}]${colors.reset} ${JSON.stringify(entry)}`
-  );
+  console.log(`${color}[${level.toUpperCase()}]${colors.reset} ${json}`);
 }
 
 export const logger = {
