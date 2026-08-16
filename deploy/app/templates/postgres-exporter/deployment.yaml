@@ -28,8 +28,15 @@ spec:
             - containerPort: {{ .Values.postgresExporter.service.targetPort}}
 
           env:
+          # fetch all the env values from secret
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: POSTGRES_DB
+
             - name: DATA_SOURCE_URI
-              value: "database-service:{{ .Values.database.service.port }}/{{ .Values.database.auth.postgresDB }}?sslmode=disable"
+              value: "database-service:{{ .Values.database.service.port }}/$(POSTGRES_DB)?sslmode=disable"
 
             - name: DATA_SOURCE_USER
               valueFrom:

@@ -65,10 +65,6 @@ database:
     limits:
       memory: "512Mi"
       cpu: "500m"
-  auth:
-    postgresDB: todo-db
-    postgresUser: deep
-    postgresPassword: smthn
 # export postgres metrics via postgres-exporter
 postgresExporter:
   enabled: true
